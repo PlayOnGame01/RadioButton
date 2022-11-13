@@ -1,22 +1,24 @@
 #include <windows.h>
 #include <tchar.h>
+#include <commctrl.h>
+#include <windowsX.h>
 #include "resource.h"
-
 BOOL CALLBACK DlgProc(HWND, UINT, WPARAM, LPARAM);
 
-HWND hButton, hEdit1, hEdit2;
+HWND hButton, hEdit1, hEdit2, hProgress;
+HMENU hMenu;
+
 int TrueAnswer = 0, MaxAnswer = 8;
 
-TCHAR str[50];
+TCHAR str[100];
 TCHAR percent[] = TEXT("%");
-TCHAR idok1[50];
-TCHAR idok2[50];
+TCHAR idok1[100];
+TCHAR idok2[100];
+TCHAR CorrectBoxAnswer1[] = TEXT("Тест свободный");
+TCHAR CorrectBoxAnswer2[] = TEXT("Разные темы");
 
-TCHAR CorrectBoxAnswer1[] = TEXT("Молния Макуин");
-TCHAR CorrectBoxAnswer2[] = TEXT("Тачки");
-char szImageName[] = "BMImage"; 
-
-
+WPARAM iProgessPosition = 0;
+DWORD IDC_TIMER;
 
 int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPTSTR lpszCmdLine, int nCmdShow)
 {
@@ -44,9 +46,14 @@ BOOL CALLBACK DlgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		hButton = GetDlgItem(hWnd, IDC_BUTTON1);
 		hEdit1 = GetDlgItem(hWnd, IDC_EDIT1);
 		hEdit2 = GetDlgItem(hWnd, IDC_EDIT2);
-	}
-					   return TRUE;
+		hProgress = GetDlgItem(hWnd, IDC_PROGRESS1);
+		SetMenu(hWnd, hMenu);
 
+		SendMessage(hProgress, PBM_SETRANGE, 0, MAKELPARAM(0, 100));
+		SendMessage(hProgress, PBM_SETSTEP, 10, 0);
+		SendMessage(hProgress, PBM_SETPOS, 0, 0);
+	}
+	return TRUE;
 	case WM_COMMAND: {
 		if (LOWORD(wParam) == IDC_RADIO2) {
 			SendDlgItemMessage(hWnd, IDC_RADIO2, BM_SETCHECK, WPARAM(BST_CHECKED), 0);
@@ -137,15 +144,17 @@ BOOL CALLBACK DlgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				TrueAnswer--;
 			}
 		}
-
 		if (LOWORD(wParam) == IDC_BUTTON1) {
 			TrueAnswer = (double(TrueAnswer) / MaxAnswer) * 100;
 			wsprintf(str, TEXT("Ваш результат = %d %hs"), TrueAnswer, percent);
 			MessageBox(hWnd, str, TEXT("Result"), MB_OK);
 			EndDialog(hWnd, 0);
 		}
+		if (LOWORD(wParam) == ID_MENU_EXIT) {
+			EndDialog(hWnd, 0);
+		}
+		return TRUE;
 	}
-				   return TRUE;
 	}
 	return FALSE;
 }
