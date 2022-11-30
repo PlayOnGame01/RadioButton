@@ -17,7 +17,7 @@ TCHAR idok2[100];
 TCHAR CorrectBoxAnswer1[] = TEXT("Тест свободный");
 TCHAR CorrectBoxAnswer2[] = TEXT("Разные темы");
 
-WPARAM iProgessPosition = 0;
+WPARAM iProgessPosition = 0; 
 DWORD IDC_TIMER;
 
 int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPTSTR lpszCmdLine, int nCmdShow)
